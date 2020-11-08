@@ -8,16 +8,20 @@ let circle5 = [];
 let circle6 = [];
 let circle7 = [];
 let circle8 = [];
-let speed = 50;
+let r = 0;
 let frameCount = 0;
-let r = 400
+let speed = 50;
+const lifetime = speed * 3
 const applyHSL = true;
-const magicNB = 1.417
+const magicNB = 1.4141414141
 
+
+window.addEventListener('resize', setup);
 
 function setup () {
-    canvas.width = 2 * r + 5;
-    canvas.height = 2 * r + 5;
+    r = window.innerHeight <= window.innerWidth
+        ? window.innerHeight / 4
+        : window.innerWidth / 4;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     canvas.centerX = canvas.width / 2
@@ -49,7 +53,7 @@ function loop() {
     window.requestAnimationFrame(loop);
 }
 
-function newPoints(x, y, endAt, size = 3, color = 'white') {
+function newPoints(x, y, endAt, size = 1, color = 'white') {
     return { x, y, endAt, color, size };
 }
 
@@ -58,7 +62,7 @@ function calcPoints(points, clockwise = true, offsetAngle = 0, color, offsetX, o
         ? (frameCount / speed) + offsetAngle
         : (-frameCount / speed) - offsetAngle;
     let vector2 = vectorFromAngle(angle, r, offsetX, offsetY);
-    let point = newPoints(vector2.x, vector2.y, frameCount + 100 + speed, 3, color)
+    let point = newPoints(vector2.x, vector2.y, frameCount + lifetime, 2, color)
 
     if(distanceFromCenter(point.x, point.y) < magicNB * r + 2) {
         if (applyHSL)
@@ -84,7 +88,7 @@ function draw(points) {
         ctx.moveTo(points[i-1].x, points[i-1].y)
         ctx.strokeStyle = p.color
         ctx.lineWidth = p.size
-        if ( i % 60 === 0 )
+        if ( i % 20 === 0 )
             ctx.lineWidth = p.size + 5;
         ctx.lineTo(p.x, p.y);
         ctx.stroke();
